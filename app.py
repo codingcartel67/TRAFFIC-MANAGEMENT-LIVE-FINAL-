@@ -14,7 +14,8 @@ from decision_engine import DecisionSupportEngine
 import database as db
 from youtube_stream import extract_youtube_stream, is_valid_youtube_url, clear_stream_cache
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, static_folder='.', static_url_path='', template_folder=os.path.join(BASE_DIR, 'templates'))
 CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
