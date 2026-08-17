@@ -31,4 +31,4 @@ RUN python sample_generator.py
 EXPOSE 5000
 
 # Start server with python app.py
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
