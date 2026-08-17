@@ -30,5 +30,11 @@ RUN python sample_generator.py
 # Expose port
 EXPOSE 5000
 
-# Start server with python app.py
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
+# Start server with python app.py — this is required, not optional: app.py's
+# thread-startup code (camera workers, decision engine, PORT binding) lives
+# inside `if __name__ == "__main__":`, which only runs when the script is
+# executed directly. Running it via `gunicorn app:app` instead just imports
+# the Flask object and NEVER starts the camera/detection threads, and also
+# bypasses app.py's correct dynamic $PORT handling. Do not change this to
+# gunicorn unless app.py's worker startup is first moved out of __main__.
+CMD ["python", "app.py"]
