@@ -1,1 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether.Traffic // AI Digital Twin & Decision Support</title>
+    <meta name="description" content="Aether.Traffic - Smart City Real-time Decision Support & Digital Twin Traffic Simulation platform powered by OpenCV, YOLOv8, and Pandas Analytics">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="/static/css/command_center.css">
+</head>
+<body class="dashboard-body">
 
+    <!-- Outer Dashboard Container with Left Sidebar & Main App Area -->
+    <div class="dashboard-layout">
+
+        <!-- ============================================================
+             LEFT SIDEBAR NAVIGATION (Images 2 & 3)
+             ============================================================ -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-header">
+                <div class="sidebar-brand-title">
+                    <span class="brand-glow-text">Aether.Traffic</span>
+                </div>
+                <div class="sidebar-brand-sub">AI Digital Twin</div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="#mission-control" class="nav-item active" id="nav-mission-control" onclick="switchNavTab('mission-control', event)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span>Mission Control</span>
+                </a>
+                <a href="#vision-engine" class="nav-item" id="nav-vision-engine" onclick="switchNavTab('vision-engine', event)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Vision Engine</span>
+                </a>
+                <a href="#analytics" class="nav-item" id="nav-analytics" onclick="switchNavTab('analytics', event)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="#governance" class="nav-item" id="nav-governance" onclick="switchNavTab('governance', event)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+                    <span>Governance</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button type="button" class="btn btn-sidebar-action" id="btn-init-sim" onclick="initializeSimulation()">
+                    Initialize Sim
+                </button>
+                <div class="sidebar-secondary-links">
+                    <button type="button" class="btn-link-icon" title="Settings" onclick="showNotification('Vision Engine: YOLOv8n active | Cycle: 90s | HITL Governance: Active', 'info')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Settings</span>
+                    </button>
+                    <button type="button" class="btn-link-icon" title="Support" onclick="showNotification('Aether.Traffic v2.5 | YOLOv8 + Pandas Analytics + AI Governance Active', 'info')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <span>Support</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============================================================
+             MAIN CONTENT VIEWPORT
+             ============================================================ -->
+        <div class="main-viewport">
+
+            <!-- Top Application Header Bar (Images 2 & 3) -->
+            <header class="top-app-header">
+                <div class="header-left-cluster">
+                    <div class="time-readout font-mono" id="live-clock">20:00:34</div>
+                    <div class="status-pill-badge">
+                        <span class="pulse-dot green"></span>
+                        <span class="status-text" id="system-status-indicator">Status: Operational</span>
+                    </div>
+                </div>
+
+                <div class="header-right-cluster">
+                    <!-- Sim Playback Controls -->
+                    <button type="button" class="header-icon-btn" id="btn-toggle-sim" title="Pause / Resume Sim">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                        <span id="btn-toggle-sim-label">Pause sim</span>
+                    </button>
+                    <button type="button" class="header-icon-btn" id="btn-open-upload" title="Upload Footage">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <span>Upload</span>
+                    </button>
+                    <button type="button" class="header-icon-btn" id="btn-reset-system" title="Reset Feeds & Telemetry">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+                    </button>
+
+                    <!-- Utility Icons -->
+                    <button type="button" class="header-icon-btn icon-only" title="Notifications" onclick="showNotification('Vision Engine: YOLOv8 streaming across 3 traffic corridors.', 'info')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+                    <button type="button" class="header-icon-btn icon-only" title="Feeds Stack" onclick="cycleFocusFeed()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </button>
+                    <div class="user-avatar" title="Operator Console: Human-in-the-Loop Active">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Emergency Warning Banner -->
+            <div class="emergency-alert-banner" id="emergency-banner" style="display: none;">
+                <div class="alert-icon-wrap">
+                    <span class="siren-light"></span>
+                    <span class="siren-emoji">🚨</span>
+                </div>
+                <div class="alert-text-content">
+                    <div class="alert-headline" id="emergency-headline">EMERGENCY VEHICLE DETECTED — CORRIDOR 3</div>
+                    <div class="alert-subtext" id="emergency-subtext">Preempt normal cycle: Authorize immediate green wave corridor. Human operator approval required.</div>
+                </div>
+                <div class="alert-action-wrap">
+                    <button type="button" class="btn btn-emergency-authorize" id="btn-emergency-clearance" onclick="submitOperatorAction('EMERGENCY_CLEARANCE')">
+                        APPROVE GREEN CORRIDOR
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 VIEW TAB 1: MISSION CONTROL (Primary Dashboard)
+                 ============================================================ -->
+            <div class="tab-view-content active" id="view-mission-control">
+                <div class="dashboard-scrollable-content">
+
+                    <!-- Title Row: Corridor Heading & Controls -->
+                    <div class="dashboard-title-row">
+                        <div class="corridor-title-group">
+                            <h1 class="main-corridor-title" id="focus-road-title">North Arterial</h1>
+                            <p class="main-corridor-subtitle" id="focus-road-subtitle">Deep-Dive Control &amp; Live Telemetry</p>
+                        </div>
+                        <div class="corridor-action-controls">
+                            <button type="button" class="btn btn-secondary-pill" id="btn-open-parameters" onclick="showNotification('YOLOv8 Threshold: 0.35 | Cycle: 90s | Min Green: 12s', 'info')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                                <span>Parameters</span>
+                            </button>
+                            <button type="button" class="btn btn-primary-cyan-pill" id="btn-switch-feed" onclick="cycleFocusFeed()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                                <span id="btn-switch-feed-label">Switch Feed</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upper Section Grid: Primary Live Video Stage + Decision Support (Image 3) -->
+                    <div class="upper-dashboard-grid">
+
+                        <!-- Left: Large Live Stream Stage & Feeds Underneath -->
+                        <div class="stage-container-card">
+                            
+                            <!-- Video Frame Viewport -->
+                            <div class="live-video-viewport">
+                                <img src="/api/stream/1" alt="Active Traffic Stream" class="live-stream-feed-img" id="focus-stream-img" crossorigin="anonymous">
+                                
+                                <!-- Video HUD Overlays -->
+                                <div class="live-hud-badge-layer">
+                                    <div class="hud-top-left-tag">
+                                        <span class="live-cam-dot"></span>
+                                        <span class="live-cam-text font-mono" id="focus-cam-id">LIVE // CAM-01</span>
+                                    </div>
+                                    <div class="hud-top-right-stats font-mono" id="focus-hud-telemetry">
+                                        Obj: <span id="focus-hud-obj">1</span> | FPS: <span id="focus-hud-fps">45</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4 Mini Telemetry Stats Strip -->
+                            <div class="hud-telemetry-strip">
+                                <div class="hud-stat-box">
+                                    <span class="stat-lbl font-mono">OCCUPANCY</span>
+                                    <span class="stat-val font-mono" id="focus-occ-val">3.3%</span>
+                                </div>
+                                <div class="hud-stat-box">
+                                    <span class="stat-lbl font-mono">TRACKED</span>
+                                    <span class="stat-val font-mono" id="focus-tracked-val">1</span>
+                                </div>
+                                <div class="hud-stat-box">
+                                    <span class="stat-lbl font-mono">WEIGHTED LOAD</span>
+                                    <span class="stat-val font-mono" id="focus-load-val">1.0 PCU</span>
+                                </div>
+                                <div class="hud-stat-box">
+                                    <span class="stat-lbl font-mono">INFERENCE SPEED</span>
+                                    <span class="stat-val font-mono text-cyan" id="focus-fps-val">45.0 FPS</span>
+                                </div>
+                            </div>
+
+                            <!-- 3 Monitored Corridor Panels Grid with Inline Source Config (NO PRESETS) -->
+                            <div class="corridor-panels-subgrid">
+
+                                <!-- FEED 01 -->
+                                <div class="corridor-card active" id="corridor-card-1" onclick="setActiveFocusFeed(1, event)">
+                                    <div class="card-header-bar">
+                                        <div class="card-id font-mono">FEED 01 &bull; <span class="text-emerald font-bold" id="live-tag-1">LIVE</span></div>
+                                        <div class="card-phase font-mono" id="card-sig-1">Green 35s</div>
+                                    </div>
+                                    <div class="card-name-row">
+                                        <h4 class="card-title" id="card-title-1">North Arterial</h4>
+                                        <span class="card-occ-tag font-mono" id="cnt-1">3.3%</span>
+                                    </div>
+                                    <div class="card-preview-window">
+                                        <img src="/api/stream/1" alt="Feed 1" class="thumb-img" id="stream-img-1" crossorigin="anonymous">
+                                    </div>
+                                    
+                                    <!-- Source Input Drawer (NO PRESETS) -->
+                                    <div class="card-source-drawer" onclick="event.stopPropagation()">
+                                        <div class="drawer-tabs-row">
+                                            <button type="button" class="drawer-tab active" id="src-tab-yt-1" onclick="switchCardSourceMode(1, 'YT')">▶ YouTube URL</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-file-1" onclick="switchCardSourceMode(1, 'FILE')">📁 Upload</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-demo-1" onclick="switchCardSourceMode(1, 'DEMO')">🚦 Demo</button>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-yt-1">
+                                            <div class="clean-input-row">
+                                                <input type="text" class="clean-text-input font-mono" id="card-yt-input-1" placeholder="Paste YouTube link / livestream URL..." onkeydown="if(event.key==='Enter') applyCardYoutube(1)">
+                                                <button type="button" class="btn-clean-connect" onclick="applyCardYoutube(1)">Connect</button>
+                                            </div>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-file-1" style="display: none;">
+                                            <label class="clean-file-label">
+                                                <span>📁 Choose Video File (MP4, AVI, MOV)</span>
+                                                <input type="file" accept="video/*" class="hidden-file-input" onchange="handleDirectFeedUpload(1, this.files[0])">
+                                            </label>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-demo-1" style="display: none;">
+                                            <button type="button" class="btn-clean-demo-reset" onclick="setFeedSource(1, 'DEMO')">
+                                                Reset to North Arterial Demo Loop
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FEED 02 -->
+                                <div class="corridor-card" id="corridor-card-2" onclick="setActiveFocusFeed(2, event)">
+                                    <div class="card-header-bar">
+                                        <div class="card-id font-mono">FEED 02 &bull; <span class="text-emerald font-bold" id="live-tag-2">LIVE</span></div>
+                                        <div class="card-phase font-mono" id="card-sig-2">Red</div>
+                                    </div>
+                                    <div class="card-name-row">
+                                        <h4 class="card-title" id="card-title-2">East Boulevard</h4>
+                                        <span class="card-occ-tag font-mono" id="cnt-2">11.3%</span>
+                                    </div>
+                                    <div class="card-preview-window">
+                                        <img src="/api/stream/2" alt="Feed 2" class="thumb-img" id="stream-img-2" crossorigin="anonymous">
+                                    </div>
+                                    
+                                    <!-- Source Input Drawer (NO PRESETS) -->
+                                    <div class="card-source-drawer" onclick="event.stopPropagation()">
+                                        <div class="drawer-tabs-row">
+                                            <button type="button" class="drawer-tab active" id="src-tab-yt-2" onclick="switchCardSourceMode(2, 'YT')">▶ YouTube URL</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-file-2" onclick="switchCardSourceMode(2, 'FILE')">📁 Upload</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-demo-2" onclick="switchCardSourceMode(2, 'DEMO')">🚦 Demo</button>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-yt-2">
+                                            <div class="clean-input-row">
+                                                <input type="text" class="clean-text-input font-mono" id="card-yt-input-2" placeholder="Paste YouTube link / livestream URL..." onkeydown="if(event.key==='Enter') applyCardYoutube(2)">
+                                                <button type="button" class="btn-clean-connect" onclick="applyCardYoutube(2)">Connect</button>
+                                            </div>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-file-2" style="display: none;">
+                                            <label class="clean-file-label">
+                                                <span>📁 Choose Video File (MP4, AVI, MOV)</span>
+                                                <input type="file" accept="video/*" class="hidden-file-input" onchange="handleDirectFeedUpload(2, this.files[0])">
+                                            </label>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-demo-2" style="display: none;">
+                                            <button type="button" class="btn-clean-demo-reset" onclick="setFeedSource(2, 'DEMO')">
+                                                Reset to East Boulevard Demo Loop
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FEED 03 -->
+                                <div class="corridor-card" id="corridor-card-3" onclick="setActiveFocusFeed(3, event)">
+                                    <div class="card-header-bar">
+                                        <div class="card-id font-mono">FEED 03 &bull; <span class="text-emerald font-bold" id="live-tag-3">LIVE</span></div>
+                                        <div class="card-phase font-mono" id="card-sig-3">Red</div>
+                                    </div>
+                                    <div class="card-name-row">
+                                        <h4 class="card-title" id="card-title-3">West Parkway</h4>
+                                        <span class="card-occ-tag font-mono" id="cnt-3">45.4%</span>
+                                    </div>
+                                    <div class="card-preview-window">
+                                        <img src="/api/stream/3" alt="Feed 3" class="thumb-img" id="stream-img-3" crossorigin="anonymous">
+                                    </div>
+                                    
+                                    <!-- Source Input Drawer (NO PRESETS) -->
+                                    <div class="card-source-drawer" onclick="event.stopPropagation()">
+                                        <div class="drawer-tabs-row">
+                                            <button type="button" class="drawer-tab active" id="src-tab-yt-3" onclick="switchCardSourceMode(3, 'YT')">▶ YouTube URL</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-file-3" onclick="switchCardSourceMode(3, 'FILE')">📁 Upload</button>
+                                            <button type="button" class="drawer-tab" id="src-tab-demo-3" onclick="switchCardSourceMode(3, 'DEMO')">🚦 Demo</button>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-yt-3">
+                                            <div class="clean-input-row">
+                                                <input type="text" class="clean-text-input font-mono" id="card-yt-input-3" placeholder="Paste YouTube link / livestream URL..." onkeydown="if(event.key==='Enter') applyCardYoutube(3)">
+                                                <button type="button" class="btn-clean-connect" onclick="applyCardYoutube(3)">Connect</button>
+                                            </div>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-file-3" style="display: none;">
+                                            <label class="clean-file-label">
+                                                <span>📁 Choose Video File (MP4, AVI, MOV)</span>
+                                                <input type="file" accept="video/*" class="hidden-file-input" onchange="handleDirectFeedUpload(3, this.files[0])">
+                                            </label>
+                                        </div>
+                                        <div class="drawer-input-container" id="drawer-demo-3" style="display: none;">
+                                            <button type="button" class="btn-clean-demo-reset" onclick="setFeedSource(3, 'DEMO')">
+                                                Reset to West Parkway Demo Loop
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Right: Decision Support Intelligence Card (Image 3) -->
+                        <div class="decision-support-card">
+                            
+                            <!-- Header with glowing brain icon -->
+                            <div class="decision-card-header">
+                                <div class="decision-title-row">
+                                    <div class="brain-circuit-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                    </div>
+                                    <h3 class="decision-main-heading">Decision Support</h3>
+                                </div>
+                            </div>
+
+                            <!-- Congestion Chip & Confidence Score -->
+                            <div class="decision-badge-row">
+                                <span class="badge-congestion-chip" id="decision-congestion-chip">Low Traffic Detected</span>
+                                <span class="confidence-tag font-mono">Confidence: <strong class="text-white">94%</strong></span>
+                            </div>
+
+                            <!-- Dynamic Recommendation Box -->
+                            <div class="recommendation-content-box">
+                                <div class="rec-label">Recommendation:</div>
+                                <div class="rec-headline text-cyan" id="action-headline">
+                                    Hold North Arterial (Feed 01) green for 18s
+                                </div>
+                                <div class="rec-subtext" id="action-subtext">
+                                    Engine proposed 18s based on 3.3% occupancy | adjustable 10-90s
+                                </div>
+                                
+                                <!-- Accordion Reasoning Details -->
+                                <div class="reasoning-expand-wrap">
+                                    <button type="button" class="btn-toggle-reasoning" onclick="toggleReasoningAccordion()">
+                                        <span>Why the engine recommends this</span>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="accordion-arrow"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <div class="reasoning-details-body" id="reasoning-body" style="display: none;">
+                                        <p id="engine-reasoning-content">
+                                            Active traffic demand and detected queue load require proportional green timing to prevent unnecessary delay on cross streets.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Override Duration Slider Control -->
+                            <div class="override-slider-section">
+                                <div class="slider-header-row">
+                                    <span class="slider-label">Override Duration</span>
+                                    <span class="slider-readout font-mono text-cyan" id="slider-val-readout">18s</span>
+                                </div>
+                                <div class="slider-track-wrap">
+                                    <input type="range" min="10" max="90" value="18" step="1" class="custom-cyan-range" id="duration-slider" oninput="updateDurationReadout(this.value)">
+                                </div>
+                                <div class="slider-scale-ticks font-mono">
+                                    <span>10s</span>
+                                    <span>50s</span>
+                                    <span>90s</span>
+                                </div>
+                            </div>
+
+                            <!-- Operator Decision Actions (Reject & Approve Sequence) -->
+                            <div class="decision-action-button-row">
+                                <button type="button" class="btn btn-decision-reject" id="btn-reject-decision" onclick="submitOperatorAction('REJECT')">
+                                    Reject
+                                </button>
+                                <button type="button" class="btn btn-decision-approve" id="btn-approve-decision" onclick="submitOperatorAction('APPROVE')">
+                                    <span id="btn-approve-text">Approve 18s</span>
+                                </button>
+                            </div>
+
+                            <!-- What's Out There Vehicle Classifications (with Pedestrians) -->
+                            <div class="vehicle-classification-subcard">
+                                <div class="subcard-title font-mono">WHAT'S OUT THERE</div>
+                                <div class="classification-grid">
+                                    <div class="cls-row"><span class="cls-name">Cars</span><span class="cls-val font-mono" id="bk-cars">0</span></div>
+                                    <div class="cls-row"><span class="cls-name">Bikes</span><span class="cls-val font-mono" id="bk-bikes">0</span></div>
+                                    <div class="cls-row"><span class="cls-name">Buses</span><span class="cls-val font-mono" id="bk-buses">0</span></div>
+                                    <div class="cls-row"><span class="cls-name">Trucks</span><span class="cls-val font-mono" id="bk-trucks">0</span></div>
+                                    <div class="cls-row"><span class="cls-name text-emerald">Peds</span><span class="cls-val font-mono text-emerald font-bold" id="bk-peds">0</span></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Lower Section Grid: Network Occupancy Curve + Corridor Metrics (Image 2) -->
+                    <div class="lower-dashboard-grid">
+
+                        <!-- Left: Network Occupancy (Past Hour) Smooth Glowing Wave Chart -->
+                        <div class="analytics-chart-card">
+                            <div class="chart-card-header">
+                                <h3 class="chart-heading">Network Occupancy (Past Hour)</h3>
+                                <div class="chart-current-stat font-mono">
+                                    Current: <span class="text-cyan font-bold" id="current-occupancy-tag">3.3%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="wave-chart-viewport">
+                                <svg class="occupancy-wave-svg" viewBox="0 0 700 240" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.38"></stop>
+                                            <stop offset="60%" stop-color="#00c6ff" stop-opacity="0.12"></stop>
+                                            <stop offset="100%" stop-color="#070a10" stop-opacity="0.0"></stop>
+                                        </linearGradient>
+                                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3.5" result="blur"></feGaussianBlur>
+                                            <feMerge>
+                                                <feMergeNode in="blur"></feMergeNode>
+                                                <feMergeNode in="SourceGraphic"></feMergeNode>
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+
+                                    <!-- Horizontal Guide Grid Lines -->
+                                    <line x1="0" y1="60" x2="700" y2="60" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"></line>
+                                    <line x1="0" y1="120" x2="700" y2="120" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"></line>
+                                    <line x1="0" y1="180" x2="700" y2="180" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"></line>
+                                    <text x="6" y="25" fill="#64748b" font-size="11" font-family="JetBrains Mono">100%</text>
+                                    <text x="6" y="125" fill="#64748b" font-size="11" font-family="JetBrains Mono">50%</text>
+
+                                    <!-- Area Gradient Fill under Curve -->
+                                    <path d="M 0,240 L 0,230 Q 120,220 200,160 T 360,110 T 520,130 T 660,70 L 660,240 Z" fill="url(#waveGradient)" id="wave-area-path"></path>
+
+                                    <!-- Glowing Wave Line -->
+                                    <path d="M 0,230 Q 120,220 200,160 T 360,110 T 520,130 T 660,70" fill="none" stroke="#00f2fe" stroke-width="3" filter="url(#glow)" id="wave-line-path"></path>
+
+                                    <!-- Glowing End Marker -->
+                                    <circle cx="660" cy="70" r="5" fill="#ffffff" stroke="#00f2fe" stroke-width="3" id="wave-end-marker">
+                                        <animate attributeName="r" values="4;6.5;4" dur="2s" repeatCount="indefinite"></animate>
+                                    </circle>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Right: Corridor Metrics Card (Image 2) & Decision Audit Log -->
+                        <div class="metrics-summary-card">
+                            <div class="metrics-card-header">
+                                <h3 class="metrics-heading">Corridor Metrics</h3>
+                            </div>
+
+                            <!-- 4 Metric Rows -->
+                            <div class="corridor-metrics-table">
+                                <div class="metric-row">
+                                    <span class="metric-label">Avg Speed (NB)</span>
+                                    <span class="metric-value font-mono" id="val-speed-nb">36 mph</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Avg Speed (SB)</span>
+                                    <span class="metric-value font-mono" id="val-speed-sb">40 mph</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Queue Length</span>
+                                    <span class="metric-value font-mono" id="val-queue-len">0.1 mi</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Phase Status</span>
+                                    <span class="metric-value font-mono text-emerald font-bold" id="val-phase-status">Holding Green</span>
+                                </div>
+                            </div>
+
+                            <!-- Decision History Audit Trail -->
+                            <div class="audit-log-wrapper">
+                                <div class="audit-header-row">
+                                    <span class="audit-title font-mono">DECISION LOG</span>
+                                    <span class="audit-count font-mono text-dim" id="log-count-tag">0 entries</span>
+                                </div>
+                                <div class="audit-log-list" id="audit-log-list">
+                                    <div class="empty-log-msg font-sans">No operator actions yet. Approved sequence plans are logged in real time.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 VIEW TAB 2: VISION ENGINE (Deep-Dive YOLOv8 Computer Vision)
+                 ============================================================ -->
+            <div class="tab-view-content" id="view-vision-engine" style="display: none;">
+                <div class="dashboard-scrollable-content">
+                    <div class="dashboard-title-row">
+                        <div>
+                            <h1 class="main-corridor-title">Vision Engine</h1>
+                            <p class="main-corridor-subtitle">YOLOv8 &bull; OpenCV Multi-Class Real-Time Detection &amp; Spatial Tracking</p>
+                        </div>
+                        <div class="corridor-action-controls">
+                            <span class="status-pill-badge"><span class="pulse-dot green"></span> YOLOv8 Tensor RT Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Vision Engine 6-KPI Top Matrix -->
+                    <div class="vision-kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">CARS DETECTED</div>
+                            <div class="kpi-value font-mono text-cyan" id="ve-cars">0</div>
+                            <div class="kpi-sub">COCO Class 2</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">BIKES &amp; MOTORCYCLES</div>
+                            <div class="kpi-value font-mono text-amber" id="ve-bikes">0</div>
+                            <div class="kpi-sub">COCO Class 1, 3</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">BUSES &amp; TRUCKS</div>
+                            <div class="kpi-value font-mono text-coral" id="ve-heavy">0</div>
+                            <div class="kpi-sub">Heavy Freight / Transit</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">PEDESTRIANS</div>
+                            <div class="kpi-value font-mono text-emerald" id="ve-peds">0</div>
+                            <div class="kpi-sub">Crosswalk Safety (Class 0)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">TRAFFIC DENSITY</div>
+                            <div class="kpi-value font-mono" id="ve-density">LOW (3.3%)</div>
+                            <div class="kpi-sub">Spatial ROI Occupancy</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">AVERAGE SPEED</div>
+                            <div class="kpi-value font-mono text-cyan" id="ve-speed">36 mph</div>
+                            <div class="kpi-sub">Displacement Tracking</div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Stream 3-Camera Grid -->
+                    <div class="vision-multi-cam-grid">
+                        <div class="vision-cam-card">
+                            <div class="vision-cam-header font-mono">
+                                <span>CAM-01 // North Arterial</span>
+                                <span class="text-emerald">&bull; LIVE 45 FPS</span>
+                            </div>
+                            <div class="vision-cam-viewport">
+                                <img src="/api/stream/1" alt="Cam 1" class="vision-feed-img" crossorigin="anonymous">
+                            </div>
+                        </div>
+                        <div class="vision-cam-card">
+                            <div class="vision-cam-header font-mono">
+                                <span>CAM-02 // East Boulevard</span>
+                                <span class="text-emerald">&bull; LIVE 45 FPS</span>
+                            </div>
+                            <div class="vision-cam-viewport">
+                                <img src="/api/stream/2" alt="Cam 2" class="vision-feed-img" crossorigin="anonymous">
+                            </div>
+                        </div>
+                        <div class="vision-cam-card">
+                            <div class="vision-cam-header font-mono">
+                                <span>CAM-03 // West Parkway</span>
+                                <span class="text-emerald">&bull; LIVE 45 FPS</span>
+                            </div>
+                            <div class="vision-cam-viewport">
+                                <img src="/api/stream/3" alt="Cam 3" class="vision-feed-img" crossorigin="anonymous">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 VIEW TAB 3: ANALYTICS (Python Pandas Data Intelligence)
+                 ============================================================ -->
+            <div class="tab-view-content" id="view-analytics" style="display: none;">
+                <div class="dashboard-scrollable-content">
+                    <div class="dashboard-title-row">
+                        <div>
+                            <h1 class="main-corridor-title">Traffic Analytics</h1>
+                            <p class="main-corridor-subtitle">Python Pandas Statistical Dataframes &bull; Throughput &amp; Congestion Modeling</p>
+                        </div>
+                        <div class="corridor-action-controls">
+                            <button type="button" class="btn btn-secondary-pill" onclick="refreshSystemAnalytics()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                                <span>Refresh Pandas Engine</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 Big Analytic KPI Cards -->
+                    <div class="analytics-kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">TOTAL TRAFFIC VOLUME</div>
+                            <div class="kpi-value font-mono text-cyan" id="ana-tot-vol">24</div>
+                            <div class="kpi-sub">Vehicles Processed Session</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">SYSTEM AVG SPEED</div>
+                            <div class="kpi-value font-mono text-emerald" id="ana-avg-spd">38 mph</div>
+                            <div class="kpi-sub">Flow Equilibrium</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">CONGESTION SCORE</div>
+                            <div class="kpi-value font-mono text-amber" id="ana-cong-score">18.4%</div>
+                            <div class="kpi-sub">Pandas Weighted Index</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title font-mono">PEAK TRAFFIC PERIOD</div>
+                            <div class="kpi-value font-mono text-white" id="ana-peak-time">08:30 - 09:15 AM</div>
+                            <div class="kpi-sub">Historical Window</div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Visual Split -->
+                    <div class="analytics-visual-grid">
+                        <!-- Vehicle Distribution Bar -->
+                        <div class="analytics-card">
+                            <h3 class="chart-heading">Vehicle Class Distribution (%)</h3>
+                            <div class="distrib-bars-wrapper" id="ana-distrib-bars">
+                                <div class="distrib-bar-row">
+                                    <span class="distrib-name">Cars</span>
+                                    <div class="distrib-progress-bg"><div class="distrib-progress-fill" id="bar-cars" style="width: 65%;"></div></div>
+                                    <span class="distrib-pct font-mono" id="pct-cars">65%</span>
+                                </div>
+                                <div class="distrib-bar-row">
+                                    <span class="distrib-name">Motorcycles / Bikes</span>
+                                    <div class="distrib-progress-bg"><div class="distrib-progress-fill" id="bar-bikes" style="width: 15%; background: var(--amber-primary);"></div></div>
+                                    <span class="distrib-pct font-mono" id="pct-bikes">15%</span>
+                                </div>
+                                <div class="distrib-bar-row">
+                                    <span class="distrib-name">Buses</span>
+                                    <div class="distrib-progress-bg"><div class="distrib-progress-fill" id="bar-buses" style="width: 10%; background: #a855f7;"></div></div>
+                                    <span class="distrib-pct font-mono" id="pct-buses">10%</span>
+                                </div>
+                                <div class="distrib-bar-row">
+                                    <span class="distrib-name">Trucks</span>
+                                    <div class="distrib-progress-bg"><div class="distrib-progress-fill" id="bar-trucks" style="width: 6%; background: var(--coral-primary);"></div></div>
+                                    <span class="distrib-pct font-mono" id="pct-trucks">6%</span>
+                                </div>
+                                <div class="distrib-bar-row">
+                                    <span class="distrib-name">Pedestrians</span>
+                                    <div class="distrib-progress-bg"><div class="distrib-progress-fill" id="bar-peds" style="width: 4%; background: var(--emerald-primary);"></div></div>
+                                    <span class="distrib-pct font-mono" id="pct-peds">4%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Corridor Pandas Data Table -->
+                        <div class="analytics-card">
+                            <h3 class="chart-heading">Corridor Pandas Aggregation</h3>
+                            <table class="pandas-data-table font-mono">
+                                <thead>
+                                    <tr>
+                                        <th>Corridor</th>
+                                        <th>Count</th>
+                                        <th>Density</th>
+                                        <th>Load (PCU)</th>
+                                        <th>Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pandas-table-body">
+                                    <tr>
+                                        <td>North Arterial</td>
+                                        <td id="pt-cnt-1">1</td>
+                                        <td id="pt-den-1">3.3%</td>
+                                        <td id="pt-load-1">1.0</td>
+                                        <td class="text-emerald" id="pt-lvl-1">LOW</td>
+                                    </tr>
+                                    <tr>
+                                        <td>East Boulevard</td>
+                                        <td id="pt-cnt-2">5</td>
+                                        <td id="pt-den-2">11.3%</td>
+                                        <td id="pt-load-2">5.0</td>
+                                        <td class="text-emerald" id="pt-lvl-2">LOW</td>
+                                    </tr>
+                                    <tr>
+                                        <td>West Parkway</td>
+                                        <td id="pt-cnt-3">5</td>
+                                        <td id="pt-den-3">45.4%</td>
+                                        <td id="pt-load-3">5.0</td>
+                                        <td class="text-coral" id="pt-lvl-3">HIGH</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 VIEW TAB 4: GOVERNANCE (Human-in-the-Loop Decision Console)
+                 ============================================================ -->
+            <div class="tab-view-content" id="view-governance" style="display: none;">
+                <div class="dashboard-scrollable-content">
+                    <div class="dashboard-title-row">
+                        <div>
+                            <h1 class="main-corridor-title">HITL Governance</h1>
+                            <p class="main-corridor-subtitle">Human-in-the-Loop Oversight &bull; Advisory Signal Authorization &amp; Decision Audit Log</p>
+                        </div>
+                        <div class="corridor-action-controls">
+                            <button type="button" class="btn btn-emergency-authorize" onclick="submitOperatorAction('EMERGENCY_CLEARANCE')">
+                                Force Emergency Green Wave
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Advisory Panel -->
+                    <div class="governance-active-card">
+                        <div class="gov-card-header">
+                            <div class="gov-title-wrap">
+                                <span class="pulse-dot green"></span>
+                                <h3 class="chart-heading">Current AI Signal Recommendation</h3>
+                            </div>
+                            <span class="confidence-tag font-mono">Confidence: <strong class="text-white">94%</strong></span>
+                        </div>
+
+                        <div class="gov-recommendation-box">
+                            <div class="rec-label">Recommended Action:</div>
+                            <h2 class="rec-headline text-cyan" id="gov-rec-headline">
+                                Hold North Arterial (Feed 01) green for 18s
+                            </h2>
+                            <p class="rec-subtext" id="gov-rec-subtext">
+                                Derived from real-time queue demand and weighted passenger car units across 3 corridors.
+                            </p>
+                        </div>
+
+                        <div class="gov-controls-row">
+                            <div class="gov-slider-wrap">
+                                <div class="slider-header-row">
+                                    <span>Signal Green Duration</span>
+                                    <span class="slider-readout font-mono text-cyan" id="gov-slider-val">18s</span>
+                                </div>
+                                <input type="range" min="10" max="90" value="18" step="1" class="custom-cyan-range" id="gov-duration-slider" oninput="updateDurationReadout(this.value)">
+                            </div>
+                            <div class="gov-buttons-cluster">
+                                <button type="button" class="btn btn-decision-reject" onclick="submitOperatorAction('REJECT')">
+                                    ✕ Reject
+                                </button>
+                                <button type="button" class="btn btn-secondary-pill" onclick="submitCustomDuration()">
+                                    ⚙ Modify Timings
+                                </button>
+                                <button type="button" class="btn btn-decision-approve" onclick="submitOperatorAction('APPROVE')">
+                                    ✓ Approve Plan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Complete Audit Trail Table -->
+                    <div class="analytics-card">
+                        <div class="chart-card-header">
+                            <h3 class="chart-heading">Full Decision Audit Trail (SQLite Persistent Log)</h3>
+                            <button type="button" class="btn-link-icon text-cyan" onclick="loadAuditLogs()">
+                                🔄 Refresh History
+                            </button>
+                        </div>
+                        <table class="pandas-data-table font-mono" style="margin-top: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Corridor</th>
+                                    <th>AI Recommended</th>
+                                    <th>Operator Action</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gov-audit-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-dim text-center">Loading audit log records...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Batch Upload Modal -->
+    <div class="modal-overlay" id="upload-modal" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Batch Upload Traffic Video Footage</h3>
+                <button type="button" class="btn-modal-close" id="btn-close-upload">&times;</button>
+            </div>
+            <form id="upload-form" class="modal-form" enctype="multipart/form-data">
+                <div class="upload-dropzone">
+                    <input type="file" id="video-files" name="videos" multiple accept="video/*" class="file-input-hidden">
+                    <label for="video-files" class="dropzone-label">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <span>Select up to 3 video files (MP4, AVI, MOV)</span>
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary-pill" id="btn-cancel-upload">Cancel</button>
+                    <button type="submit" class="btn btn-primary-cyan-pill" id="btn-submit-upload">Process Videos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Javascript Controller -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
