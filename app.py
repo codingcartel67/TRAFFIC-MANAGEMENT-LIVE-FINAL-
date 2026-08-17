@@ -7,7 +7,6 @@ import numpy as np
 from flask import Flask, render_template, Response, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-
 from detector import VehicleDetector
 from analytics import TrafficAnalyticsEngine
 from decision_engine import DecisionSupportEngine
